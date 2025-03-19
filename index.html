@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    .container {
+      max-width: 768px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin: 0 auto;
+    }
+  </style>
+
+  <script>
+    let mClient;
+    async function preload() {
+      const Gradio = await import("https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js");
+      mClient = await Gradio.Client.connect("5020A/5020-ColorSort-Gradio");
+      document.getElementById("color-picker").dispatchEvent(new Event('change'));
+    }
+    preload();
+
+    const IMGS_URL = "https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers";
+
+    function orderImages(imageFiles) {
+      const container = document.getElementById('main-container');
+      container.innerHTML = "";
+
+      imageFiles.forEach((fname, i) => {
+        const imgDivEl = document.createElement("div");
+        imgDivEl.classList.add("img-container");
+        container.appendChild(imgDivEl);
+
+        const imgEl = document.createElement("img");
+        imgEl.setAttribute("src", `${IMGS_URL}/${fname}`);
+        imgEl.classList.add("img-img");
+        imgDivEl.appendChild(imgEl);
+      });
+    }
+
+    window.addEventListener("load", (event) => {
+      const colorEl = document.getElementById("color-picker");
+      colorEl.addEventListener("change", async (event) => {
+        document.getElementById('main-container').innerHTML = "Loading...";
+        const result = await mClient.predict("/predict", { 		
+		      center_color_str: event.target.value
+        });
+        orderImages(result.data[0].files);
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <input type="color" id="color-picker" value="#fffffe">
+  <div id="main-container" class="container"></div>
+</body>
+
+</html>
