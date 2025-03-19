@@ -43,7 +43,7 @@ def get_top_colors(flower_image_dir):
   flower_files = sorted([f for f in listdir(flower_image_dir) if f.endswith(".png")])
 
   file_colors = []
-  for fname in flower_files[:200]:
+  for fname in flower_files:
     file_colors.append({
       "filename": fname,
       "colors": top_colors(f"{flower_image_dir}/{fname}", n_clusters=8, n_colors=4)
