@@ -1,2 +1,2 @@
-fastapi==0.112.2
+pydantic==2.8.2
 scikit-learn
